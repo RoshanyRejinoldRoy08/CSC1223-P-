@@ -1,0 +1,233 @@
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
+| uov                |
+| uov1               |
++--------------------+
+7 rows in set (0.002 sec)
+
+MariaDB [(none)]> use uov;
+Database changed
+MariaDB [uov]> show tables;
++---------------+
+| Tables_in_uov |
++---------------+
+| customer      |
+| employees     |
+| product       |
+| sales         |
++---------------+
+4 rows in set (0.001 sec)
+
+MariaDB [uov]> create table Authors(Author_ID INT(3),Name VARCHAR(50), BirthYear INT(5));
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [uov]> desc authors;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| Author_ID | int(3)      | YES  |     | NULL    |       |
+| Name      | varchar(50) | YES  |     | NULL    |       |
+| BirthYear | int(5)      | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.023 sec)
+
+MariaDB [uov]> load data infile'C:/xampp/mysql/data/uov/Author.csv'
+    -> into table Authors
+    -> fields terminated by','
+    -> lines terminated by'\r\n';
+Query OK, 5 rows affected (0.010 sec)
+Records: 5  Deleted: 0  Skipped: 0  Warnings: 0
+
+MariaDB [uov]> select *from authors;
++-----------+-------------------+-----------+
+| Author_ID | Name              | BirthYear |
++-----------+-------------------+-----------+
+|         1 | J.K.Rowling       |      1965 |
+|         2 | George R.R.Martin |      1948 |
+|         3 | Agatha christie   |      1890 |
+|         4 | Stephen King      |      1947 |
+|         5 | Haruki Murakami   |      1949 |
++-----------+-------------------+-----------+
+5 rows in set (0.047 sec)
+
+MariaDB [uov]> alter table authors
+    -> add  country varchar(20);
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select *from authors;
++-----------+-------------------+-----------+---------+
+| Author_ID | Name              | BirthYear | country |
++-----------+-------------------+-----------+---------+
+|         1 | J.K.Rowling       |      1965 | NULL    |
+|         2 | George R.R.Martin |      1948 | NULL    |
+|         3 | Agatha christie   |      1890 | NULL    |
+|         4 | Stephen King      |      1947 | NULL    |
+|         5 | Haruki Murakami   |      1949 | NULL    |
++-----------+-------------------+-----------+---------+
+5 rows in set (0.000 sec)
+
+MariaDB [uov]> desc authors;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| Author_ID | int(3)      | YES  |     | NULL    |       |
+| Name      | varchar(50) | YES  |     | NULL    |       |
+| BirthYear | int(5)      | YES  |     | NULL    |       |
+| country   | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.022 sec)
+
+MariaDB [uov]> create table author(author_id int(10)primary key auto_increment);
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [uov]> alter table authors
+    -> add age int(2)
+    -> after name;
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from authors;
++-----------+-------------------+------+-----------+---------+
+| Author_ID | Name              | age  | BirthYear | country |
++-----------+-------------------+------+-----------+---------+
+|         1 | J.K.Rowling       | NULL |      1965 | NULL    |
+|         2 | George R.R.Martin | NULL |      1948 | NULL    |
+|         3 | Agatha christie   | NULL |      1890 | NULL    |
+|         4 | Stephen King      | NULL |      1947 | NULL    |
+|         5 | Haruki Murakami   | NULL |      1949 | NULL    |
++-----------+-------------------+------+-----------+---------+
+5 rows in set (0.000 sec)
+
+MariaDB [uov]> alter table authors
+    -> add firstname varchar (10)
+    -> first;
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from authors;
++-----------+-----------+-------------------+------+-----------+---------+
+| firstname | Author_ID | Name              | age  | BirthYear | country |
++-----------+-----------+-------------------+------+-----------+---------+
+| NULL      |         1 | J.K.Rowling       | NULL |      1965 | NULL    |
+| NULL      |         2 | George R.R.Martin | NULL |      1948 | NULL    |
+| NULL      |         3 | Agatha christie   | NULL |      1890 | NULL    |
+| NULL      |         4 | Stephen King      | NULL |      1947 | NULL    |
+| NULL      |         5 | Haruki Murakami   | NULL |      1949 | NULL    |
++-----------+-----------+-------------------+------+-----------+---------+
+5 rows in set (0.000 sec)
+
+MariaDB [uov]> update authors
+    -> set country='uk'
+    -> where author_id=1;
+Query OK, 1 row affected (0.009 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [uov]> select * from authors;
++-----------+-----------+-------------------+------+-----------+---------+
+| firstname | Author_ID | Name              | age  | BirthYear | country |
++-----------+-----------+-------------------+------+-----------+---------+
+| NULL      |         1 | J.K.Rowling       | NULL |      1965 | uk      |
+| NULL      |         2 | George R.R.Martin | NULL |      1948 | NULL    |
+| NULL      |         3 | Agatha christie   | NULL |      1890 | NULL    |
+| NULL      |         4 | Stephen King      | NULL |      1947 | NULL    |
+| NULL      |         5 | Haruki Murakami   | NULL |      1949 | NULL    |
++-----------+-----------+-------------------+------+-----------+---------+
+5 rows in set (0.000 sec)
+
+
+MariaDB [uov]> alter table authors
+    -> drop column age;
+Query OK, 0 rows affected (0.014 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from authors;
++-----------+-----------+-------------------+-----------+---------+
+| firstname | Author_ID | Name              | BirthYear | country |
++-----------+-----------+-------------------+-----------+---------+
+| NULL      |         1 | J.K.Rowling       |      1965 | uk      |
+| NULL      |         2 | George R.R.Martin |      1948 | NULL    |
+| NULL      |         3 | Agatha christie   |      1890 | NULL    |
+| NULL      |         4 | Stephen King      |      1947 | NULL    |
+| NULL      |         5 | Haruki Murakami   |      1949 | NULL    |
++-----------+-----------+-------------------+-----------+---------+
+5 rows in set (0.000 sec)
+
+MariaDB [uov]> alter table authors
+    -> drop column country;
+Query OK, 0 rows affected (0.013 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from authors;
++-----------+-----------+-------------------+-----------+
+| firstname | Author_ID | Name              | BirthYear |
++-----------+-----------+-------------------+-----------+
+| NULL      |         1 | J.K.Rowling       |      1965 |
+| NULL      |         2 | George R.R.Martin |      1948 |
+| NULL      |         3 | Agatha christie   |      1890 |
+| NULL      |         4 | Stephen King      |      1947 |
+| NULL      |         5 | Haruki Murakami   |      1949 |
++-----------+-----------+-------------------+-----------+
+5 rows in set (0.000 sec)
+
+MariaDB [uov]> alter table author
+    -> add age int(5),add country varchar(10);
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+MariaDB [uov]> alter table authors change name lastname varchar (10);
+Query OK, 5 rows affected, 5 warnings (0.058 sec)
+Records: 5  Duplicates: 0  Warnings: 5
+
+MariaDB [uov]> select * from authors;
++-----------+-----------+------------+-----------+
+| firstname | Author_ID | lastname   | BirthYear |
++-----------+-----------+------------+-----------+
+| NULL      |         1 | J.K.Rowlin |      1965 |
+| NULL      |         2 | George R.R |      1948 |
+| NULL      |         3 | Agatha chr |      1890 |
+| NULL      |         4 | Stephen Ki |      1947 |
+| NULL      |         5 | Haruki Mur |      1949 |
++-----------+-----------+------------+-----------+
+5 rows in set (0.002 sec)
+
+MariaDB [uov]> alter table authors
+    -> add primary key (author_id);
+Query OK, 0 rows affected (0.057 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> desc authors;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| firstname | varchar(10) | YES  |     | NULL    |       |
+| Author_ID | int(3)      | NO   | PRI | NULL    |       |
+| lastname  | varchar(10) | YES  |     | NULL    |       |
+| BirthYear | int(5)      | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.025 sec)
+
+MariaDB [uov]> alter table authors
+    -> add column department varchar(30)not null default'general'after firstname;
+Query OK, 0 rows affected (0.014 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> desc authors;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| firstname  | varchar(10) | YES  |     | NULL    |       |
+| department | varchar(30) | NO   |     | general |       |
+| Author_ID  | int(3)      | NO   | PRI | NULL    |       |
+| lastname   | varchar(10) | YES  |     | NULL    |       |
+| BirthYear  | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.024 sec)
