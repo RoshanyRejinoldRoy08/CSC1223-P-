@@ -1,0 +1,173 @@
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use uov;
+Database changed
+MariaDB [uov]> create table Employee(Employee_ID varchar(30) Primary Key,Name Varchar(30),Department Varchar(30),Salary int);
+Query OK, 0 rows affected (0.013 sec)
+
+MariaDB [uov]> DESC Employee;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Employee_ID | varchar(30) | NO   | PRI | NULL    |       |
+| Name        | varchar(30) | YES  |     | NULL    |       |
+| Department  | varchar(30) | YES  |     | NULL    |       |
+| Salary      | int(11)     | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.024 sec)
+
+
+MariaDB [uov]> Insert Into Employee Values
+    -> ('E001','Alice','HR',50000),
+    -> ('E002','Bob','IT',60000),
+    -> ('E003','Carol','IT',70000),
+    -> ('E004','David','HR',45000),
+    -> ('E005','Eva','IT',55000);
+Query OK, 5 rows affected (0.063 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from Employee;
++-------------+-------+------------+--------+
+| Employee_ID | Name  | Department | Salary |
++-------------+-------+------------+--------+
+| E001        | Alice | HR         |  50000 |
+| E002        | Bob   | IT         |  60000 |
+| E003        | Carol | IT         |  70000 |
+| E004        | David | HR         |  45000 |
+| E005        | Eva   | IT         |  55000 |
++-------------+-------+------------+--------+
+5 rows in set (0.001 sec)
+
+MariaDB [uov]> select avg(Salary) from Employee;
++-------------+
+| avg(Salary) |
++-------------+
+|  56000.0000 |
++-------------+
+1 row in set (0.001 sec)
+
+MariaDB [uov]> select Name,Salary from Employee
+    -> where Salary>(Select avg(Salary) from Employee);
++-------+--------+
+| Name  | Salary |
++-------+--------+
+| Bob   |  60000 |
+| Carol |  70000 |
++-------+--------+
+2 rows in set (0.001 sec)
+
+MariaDB [uov]> select Name,Salary from Employee
+    -> where Salary>ANY(Select Salary from Employee where Department='HR');
++-------+--------+
+| Name  | Salary |
++-------+--------+
+| Alice |  50000 |
+| Bob   |  60000 |
+| Carol |  70000 |
+| Eva   |  55000 |
++-------+--------+
+4 rows in set (0.001 sec)
+
+MariaDB [uov]> select Name,Salary from Employee
+    -> where Salary>ALL(Select Salary from Employee where Department='HR');
++-------+--------+
+| Name  | Salary |
++-------+--------+
+| Bob   |  60000 |
+| Carol |  70000 |
+| Eva   |  55000 |
++-------+--------+
+3 rows in set (0.001 sec)
+
+MariaDB [uov]>  select distinct department
+    -> from Employee e1
+    -> where exists
+    -> (select * from Employee e2
+    -> where e2.department=e1.department
+    -> and e2.Salary>65000);
++------------+
+| department |
++------------+
+| IT         |
++------------+
+1 row in set (0.001 sec)
+
+MariaDB [uov]> Create table students(StudentId Varchar(30) Primary Key,Name Varchar(30),Department Varchar(30));
+Query OK, 0 rows affected (0.014 sec)
+
+MariaDB [uov]> DESC Students;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| StudentId  | varchar(30) | NO   | PRI | NULL    |       |
+| Name       | varchar(30) | YES  |     | NULL    |       |
+| Department | varchar(30) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.025 sec)
+
+MariaDB [uov]> Insert Into Students Values
+    -> ('S001','Alice','CS'),
+    -> ('S002','Bob','IT'),
+    -> ('S003','Carol','CS'),
+    -> ('S004','David','ECE');
+Query OK, 4 rows affected (0.004 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from Students;
++-----------+-------+------------+
+| StudentId | Name  | Department |
++-----------+-------+------------+
+| S001      | Alice | CS         |
+| S002      | Bob   | IT         |
+| S003      | Carol | CS         |
+| S004      | David | ECE        |
++-----------+-------+------------+
+4 rows in set (0.001 sec)
+
+MariaDB [uov]> create table marks(StudentId VARCHAR(30),Subject VARCHAR(30),Marks int,FOREIGN KEY(StudentId)REFERENCES Students(StudentId));
+Query OK, 0 rows affected (0.041 sec)
+
+MariaDB [uov]> DESC marks;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| StudentId | varchar(30) | YES  | MUL | NULL    |       |
+| Subject   | varchar(30) | YES  |     | NULL    |       |
+| Marks     | int(11)     | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.023 sec)
+
+MariaDB [uov]> Insert Into marks Values
+    -> ('S001','DBMS',78),
+    -> ('S001','OS',85),
+    -> ('S002','DBMS',70),
+    -> ('S003','DBMS',92),
+    -> ('S004','OS',68);
+Query OK, 5 rows affected (0.004 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [uov]> select * from marks;
++-----------+---------+-------+
+| StudentId | Subject | Marks |
++-----------+---------+-------+
+| S001      | DBMS    |    78 |
+| S001      | OS      |    85 |
+| S002      | DBMS    |    70 |
+| S003      | DBMS    |    92 |
+| S004      | OS      |    68 |
++-----------+---------+-------+
+5 rows in set (0.001 sec)
+
+
+conclusion-Learnt how to use ANY,ALL
+
+
+
